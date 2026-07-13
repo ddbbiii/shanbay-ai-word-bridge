@@ -1,0 +1,40 @@
+name: CI and Release
+
+on:
+  push:
+    branches: [main]
+    tags: ["v*"]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run check
+      - name: Package extension
+        shell: bash
+        run: |
+          mkdir -p release
+          cd dist
+          zip -r ../release/shanbay-ai-word-bridge-${GITHUB_REF_NAME//\//-}.zip .
+      - uses: actions/upload-artifact@v4
+        with:
+          name: shanbay-ai-word-bridge-${{ github.ref_name }}
+          path: release/*.zip
+      - name: Publish GitHub Release
+        if: startsWith(github.ref, 'refs/tags/v')
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release create "${GITHUB_REF_NAME}" release/*.zip --generate-notes --title "Shanbay AI Word Bridge ${GITHUB_REF_NAME}"

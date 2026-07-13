@@ -1,0 +1,52 @@
+{
+  "manifest_version": 3,
+  "name": "Shanbay AI Word Bridge",
+  "version": "0.1.0",
+  "description": "Capture the current Shanbay word and send a structured prompt to your preferred AI web app.",
+  "permissions": [
+    "scripting",
+    "storage"
+  ],
+  "host_permissions": [
+    "https://web.shanbay.com/*"
+  ],
+  "optional_host_permissions": [
+    "https://gemini.google.com/*",
+    "https://chatgpt.com/*",
+    "https://www.doubao.com/*",
+    "https://www.kimi.com/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "icons": {
+    "16": "icons/icon-16.png",
+    "32": "icons/icon-32.png",
+    "48": "icons/icon-48.png",
+    "128": "icons/icon-128.png"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://web.shanbay.com/*"],
+      "js": ["shanbay.js"],
+      "run_at": "document_idle"
+    }
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "Shanbay AI Word Bridge",
+    "default_icon": {
+      "16": "icons/icon-16.png",
+      "32": "icons/icon-32.png"
+    }
+  },
+  "options_page": "options.html",
+  "commands": {
+    "capture-word": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+Y"
+      },
+      "description": "Capture the current Shanbay word"
+    }
+  }
+}

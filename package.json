@@ -1,0 +1,31 @@
+{
+  "name": "shanbay-ai-word-bridge",
+  "version": "0.1.0",
+  "description": "Send the current Shanbay word to a configurable AI web app with one shortcut.",
+  "type": "module",
+  "scripts": {
+    "build": "vite build && node scripts/build-scripts.mjs",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "check": "npm run typecheck && npm test && npm run build"
+  },
+  "keywords": [
+    "chrome-extension",
+    "shanbay",
+    "vocabulary",
+    "chatgpt",
+    "gemini"
+  ],
+  "author": "ddbbi",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/chrome": "^0.2.2",
+    "@types/node": "^26.1.1",
+    "esbuild": "^0.28.1",
+    "jsdom": "^29.1.1",
+    "typescript": "^7.0.2",
+    "vite": "^8.1.4",
+    "vitest": "^4.1.10"
+  }
+}
