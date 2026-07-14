@@ -11,6 +11,7 @@ export const doubaoAdapter: ProviderAdapter = {
     "div[contenteditable='true']"
   ],
   sendButtonSelectors: [
+    "button#flow-end-msg-send",
     "button[aria-label*='发送' i]",
     "button[data-testid*='send' i]",
     "[role='button'][aria-label*='发送' i]"

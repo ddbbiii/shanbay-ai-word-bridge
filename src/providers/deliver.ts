@@ -178,7 +178,9 @@ function isVisible(element: Element): boolean {
 }
 
 function isDisabled(button: HTMLButtonElement): boolean {
-  return button.disabled || button.getAttribute("aria-disabled") === "true";
+  return button.disabled
+    || button.getAttribute("aria-disabled") === "true"
+    || button.getAttribute("data-disabled") === "true";
 }
 
 function normalizeText(value: string): string {

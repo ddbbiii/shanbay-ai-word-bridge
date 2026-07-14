@@ -32,7 +32,7 @@ const fixtures: Fixture[] = [
   },
   {
     adapter: doubaoAdapter,
-    markup: `<div class="semi-input-textarea-wrapper"><textarea class="semi-input-textarea semi-input-textarea-autosize" placeholder="发消息..."></textarea></div><button aria-label="发送">发送</button>`,
+    markup: `<div class="semi-input-textarea-wrapper"><textarea class="semi-input-textarea semi-input-textarea-autosize" placeholder="发消息..."></textarea></div><button id="flow-end-msg-send" data-disabled="false" aria-label=""></button>`,
     editorSelector: "textarea",
     buttonSelector: "button",
     messageMarkup: `<div data-message-role="user">bridgeword</div>`
