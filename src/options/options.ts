@@ -27,7 +27,7 @@ app.innerHTML = `
       <div>
         <p class="eyebrow">SHANBAY AI WORD BRIDGE</p>
         <h1>把当前单词送到你信任的 AI</h1>
-        <p class="lede">只访问你主动授权的站点。优先使用已打开的网页；无法安全确认提交时，绝不自动改投。</p>
+        <p class="lede">安装后默认具备四个内置 AI 站点的访问权。只处理已启用且已打开的网页；无法安全确认提交时，绝不自动改投。</p>
       </div>
       <div class="privacy-chip"><span></span> 配置仅保存在本机</div>
     </header>
@@ -35,7 +35,7 @@ app.innerHTML = `
     <section class="panel provider-panel" aria-labelledby="providers-title">
       <div class="section-heading">
         <div><p class="section-index">01</p><h2 id="providers-title">站点与优先级</h2></div>
-        <p>拖拽卡片或使用箭头调整顺序。调度时只选择已启用、已授权且已经打开的站点。</p>
+        <p>拖拽卡片或使用箭头调整顺序。调度时只选择已启用且已经打开的站点。</p>
       </div>
       <div id="provider-list" class="provider-list"></div>
     </section>
@@ -108,7 +108,7 @@ void initialize();
 async function initialize(): Promise<void> {
   if (typeof chrome === "undefined" || !chrome.runtime?.id) {
     settings = normalizeSettings(null);
-    states = settings.providers.map((item) => ({ id: item.id, permissionGranted: false, open: false }));
+    states = settings.providers.map((item) => ({ id: item.id, permissionGranted: true, open: false }));
     templateInput.value = settings.promptTemplate;
     renderProviders();
     renderShortcut();
@@ -138,6 +138,7 @@ function renderProviders(): void {
 function createProviderCard(provider: ProviderSettings, index: number, total: number): HTMLElement {
   const definition = providerDefinition(provider.id);
   const runtime = states.find((item) => item.id === provider.id);
+  const permissionGranted = runtime?.permissionGranted ?? true;
   const card = document.createElement("article");
   card.className = `provider-card${provider.enabled ? "" : " is-disabled"}`;
   card.draggable = true;
@@ -156,15 +157,15 @@ function createProviderCard(provider: ProviderSettings, index: number, total: nu
       </div>
       <div class="provider-footer">
         <div class="site-state">
-          <span class="status-dot ${runtime?.permissionGranted ? "granted" : ""}"></span>
-          ${runtime?.permissionGranted ? "已授权" : "未授权"}
+          <span class="status-dot ${permissionGranted ? "granted" : ""}"></span>
+          ${permissionGranted ? "默认授权" : "等待浏览器授权"}
           <span class="divider">·</span>
           ${runtime?.open ? "网页已打开" : "网页未打开"}
         </div>
         <div class="provider-actions">
           <button class="move-button move-up" type="button" aria-label="上移" ${index === 0 ? "disabled" : ""}>↑</button>
           <button class="move-button move-down" type="button" aria-label="下移" ${index === total - 1 ? "disabled" : ""}>↓</button>
-          <button class="permission-button" type="button">${runtime?.permissionGranted ? "撤销访问权" : "授权访问"}</button>
+          <span class="permission-label">内置权限</span>
         </div>
       </div>
       <p class="url-error" aria-live="polite"></p>
@@ -186,9 +187,6 @@ function createProviderCard(provider: ProviderSettings, index: number, total: nu
   });
   requiredChild<HTMLButtonElement>(card, ".move-up").addEventListener("click", () => moveProvider(provider.id, -1));
   requiredChild<HTMLButtonElement>(card, ".move-down").addEventListener("click", () => moveProvider(provider.id, 1));
-  requiredChild<HTMLButtonElement>(card, ".permission-button").addEventListener("click", () => {
-    void togglePermission(provider.id, Boolean(runtime?.permissionGranted));
-  });
 
   card.addEventListener("dragstart", () => { draggedId = provider.id; card.classList.add("is-dragging"); });
   card.addEventListener("dragend", () => { draggedId = null; card.classList.remove("is-dragging"); });
@@ -225,26 +223,6 @@ function applyOrder(ids: ProviderId[]): void {
   const rank = new Map(ids.map((id, index) => [id, index]));
   settings.providers.forEach((item) => { item.priority = rank.get(item.id) ?? item.priority; });
   renderProviders();
-}
-
-async function togglePermission(id: ProviderId, granted: boolean): Promise<void> {
-  const definition = providerDefinition(id);
-  try {
-    const changed = granted
-      ? await chrome.permissions.remove({ origins: definition.origins })
-      : await chrome.permissions.request({ origins: definition.origins });
-    if (!changed) {
-      showToast(granted ? "访问权未被撤销" : "未获得站点访问权", true);
-      return;
-    }
-    await sendMessage({ type: "BRIDGE_SETTINGS_UPDATED" });
-    const response = await sendMessage<SettingsResponse>({ type: "BRIDGE_GET_PROVIDER_STATES" });
-    states = response.states ?? [];
-    renderProviders();
-    showToast(granted ? `已撤销 ${definition.shortName} 访问权` : `已授权 ${definition.shortName}`);
-  } catch (error) {
-    showToast(errorMessage(error, "权限操作失败"), true);
-  }
 }
 
 async function saveAll(): Promise<void> {

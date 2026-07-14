@@ -59,11 +59,11 @@ input:focus, select:focus, textarea:focus { border-color: #149b8c; box-shadow: 0
 .status-dot.granted { background: #139a89; }
 .divider { margin: 0 5px; color: #bdc6c3; }
 .provider-actions { display: flex; align-items: center; gap: 7px; }
-.move-button, .permission-button, .text-button { border: 1px solid #dbe2de; background: #fff; color: #40504c; }
+.move-button, .text-button { border: 1px solid #dbe2de; background: #fff; color: #40504c; }
 .move-button { width: 32px; height: 32px; border-radius: 9px; }
 .move-button:disabled { opacity: .32; cursor: default; }
-.permission-button { height: 32px; padding: 0 12px; border-radius: 9px; font-size: 12px; font-weight: 600; }
-.permission-button:hover, .move-button:not(:disabled):hover { border-color: #83c4b8; color: #087d71; }
+.permission-label { padding: 7px 10px; border-radius: 9px; background: #edf7f4; color: #087d71; font-size: 11px; font-weight: 700; }
+.move-button:not(:disabled):hover { border-color: #83c4b8; color: #087d71; }
 .url-error { min-height: 15px; margin: 4px 0 0; color: #b44d37; font-size: 11px; }
 
 .text-button { padding: 8px 12px; border-radius: 10px; }

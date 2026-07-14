@@ -14,7 +14,7 @@ Shanbay AI Word Bridge 是一个完全在浏览器本机运行的扩展。
 ## 页面访问
 
 - 扇贝权限用于读取用户选中文本或当前可见单词，并显示执行反馈。
-- Gemini、ChatGPT、豆包和 Kimi 均为可选权限。只有用户明确授权后，扩展才在对应页面定位编辑器、填入提问、按配置发送并验证结果。
+- Gemini、ChatGPT、豆包和 Kimi 与扇贝域名均为安装时声明的站点权限，由浏览器统一展示并由用户确认。设置页停用的站点不会注册内容脚本或参与调度。
 - 扩展不读取扇贝 Cookie，不调用扇贝私有 API，不读取 AI 聊天历史，不加载远程代码。
 
 ## 第三方服务
@@ -23,8 +23,8 @@ Shanbay AI Word Bridge 是一个完全在浏览器本机运行的扩展。
 
 ## 删除数据
 
-卸载扩展会由浏览器删除扩展本地存储。用户也可以在设置页恢复模板或撤销任一 AI 站点的访问权。
+卸载扩展会由浏览器删除扩展本地存储。用户也可以在设置页恢复模板或停用任一 AI 站点。
 
 ---
 
-This extension runs locally. It stores provider preferences, an optional conversation URL, the prompt template, and the last operation in browser storage. It does not retain a vocabulary history, collect analytics, use a developer server, read cookies, call private Shanbay APIs, or load remote code. Content is sent only to an AI website explicitly authorized and selected by the user.
+This extension runs locally. It stores provider preferences, an optional conversation URL, the prompt template, and the last operation in browser storage. It requests access to Shanbay and the four built-in AI sites during installation; disabled providers do not receive a content script or participate in routing. It does not retain a vocabulary history, collect analytics, use a developer server, read cookies, call private Shanbay APIs, or load remote code.

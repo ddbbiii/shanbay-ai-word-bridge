@@ -3,6 +3,8 @@ import type { ProviderAdapter } from "./types";
 export const doubaoAdapter: ProviderAdapter = {
   id: "doubao",
   editorSelectors: [
+    "textarea[placeholder='发消息...']",
+    "textarea[placeholder*='消息' i]",
     "textarea[placeholder*='发送' i]",
     "textarea[placeholder*='输入' i]",
     "[contenteditable='true'][role='textbox']",

@@ -1,16 +1,14 @@
 {
   "manifest_version": 3,
   "name": "Shanbay AI Word Bridge",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Capture the current Shanbay word and send a structured prompt to your preferred AI web app.",
   "permissions": [
     "scripting",
     "storage"
   ],
   "host_permissions": [
-    "https://web.shanbay.com/*"
-  ],
-  "optional_host_permissions": [
+    "https://web.shanbay.com/*",
     "https://gemini.google.com/*",
     "https://chatgpt.com/*",
     "https://www.doubao.com/*",

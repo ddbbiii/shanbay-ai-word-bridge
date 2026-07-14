@@ -6,7 +6,7 @@ Capture the current word or selected text on Shanbay and deliver a structured Ch
 
 ## Highlights
 
-- Enable, authorize, and prioritize providers independently.
+- Enable and prioritize providers independently. Access to the four built-in AI sites is requested once during installation.
 - Choose verified auto-send or fill-only mode per provider.
 - Record a custom Shanbay-page shortcut in settings; the default is the <kbd>` / ·</kbd> key.
 - Optionally prefer one conversation URL, then fall back to the most recently used tab for that provider.
@@ -19,7 +19,7 @@ Capture the current word or selected text on Shanbay and deliver a structured Ch
 1. Download and extract the ZIP from [Releases](https://github.com/ddbbiii/shanbay-ai-word-bridge/releases).
 2. Open `chrome://extensions` or `edge://extensions`.
 3. Enable Developer mode and load the extracted directory as an unpacked extension.
-4. Grant only the AI sites you intend to use on the settings page.
+4. Approve the built-in AI site permissions shown by the browser, then enable only the providers you intend to use.
 5. Disable the previous Gemini-only extension to avoid duplicate shortcut listeners.
 
 To build from source:
@@ -35,7 +35,7 @@ Load the generated `dist` directory.
 
 - Press the default <kbd>` / ·</kbd> key on Shanbay, or record any supported key or key combination on the settings page.
 - Selected text wins over page detection.
-- If no authorized provider tab is open, the complete prompt is copied for use in Codex or any other AI.
+- If no enabled provider tab is open, the complete prompt is copied for use in Codex or any other AI.
 
 See [PRIVACY.md](PRIVACY.md), [CONTRIBUTING.md](CONTRIBUTING.md), and [adapter maintenance](docs/adapter-maintenance.md).
 
