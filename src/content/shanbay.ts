@@ -1,5 +1,8 @@
 import type { PriorityDialogProvider, ProviderId } from "../shared/types";
 import { isRecentDuplicate } from "../shared/dedupe";
+import { DEFAULT_SHORTCUT, matchesShortcut } from "../shared/shortcut";
+import { normalizeSettings } from "../shared/settings";
+import type { ShortcutSettings } from "../shared/types";
 
 type BridgeWindow = Window & { __shanbayAiWordBridgeLoaded?: boolean };
 const bridgeWindow = window as BridgeWindow;
@@ -8,10 +11,17 @@ const IGNORED_WORDS = new Set([
 ]);
 let lastTriggerAt = 0;
 let lastTriggeredWord = "";
+let configuredShortcut: ShortcutSettings = { ...DEFAULT_SHORTCUT };
 
 if (!bridgeWindow.__shanbayAiWordBridgeLoaded) {
   bridgeWindow.__shanbayAiWordBridgeLoaded = true;
+  void refreshShortcut();
   document.addEventListener("keydown", handleShortcut, true);
+  chrome.storage.onChanged.addListener((changes, areaName) => {
+    if (areaName === "local" && changes.settings) {
+      configuredShortcut = normalizeSettings(changes.settings.newValue).shortcut;
+    }
+  });
   chrome.runtime.onMessage.addListener((message: unknown, _sender, sendResponse) => {
     if (!isRecord(message)) return false;
     if (message.type === "BRIDGE_CAPTURE_WORD") {
@@ -125,8 +135,16 @@ function isVisible(element: Element): boolean {
 }
 
 function isBridgeShortcut(event: KeyboardEvent): boolean {
-  return !event.ctrlKey && !event.altKey && !event.metaKey && !event.shiftKey
-    && (event.code === "Backquote" || event.key === "`" || event.key === "·" || event.key === "Process");
+  return matchesShortcut(event, configuredShortcut);
+}
+
+async function refreshShortcut(): Promise<void> {
+  try {
+    const values = await chrome.storage.local.get("settings");
+    configuredShortcut = normalizeSettings(values.settings).shortcut;
+  } catch {
+    configuredShortcut = { ...DEFAULT_SHORTCUT };
+  }
 }
 
 function isTypingTarget(target: EventTarget | null): boolean {

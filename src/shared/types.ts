@@ -32,10 +32,19 @@ export interface ProviderSettings {
   preferredUrl: string;
 }
 
+export interface ShortcutSettings {
+  code: string;
+  ctrl: boolean;
+  alt: boolean;
+  shift: boolean;
+  meta: boolean;
+}
+
 export interface AppSettings {
-  schemaVersion: 1;
+  schemaVersion: 2;
   promptTemplate: string;
   providers: ProviderSettings[];
+  shortcut: ShortcutSettings;
 }
 
 export interface ProviderRuntimeState {

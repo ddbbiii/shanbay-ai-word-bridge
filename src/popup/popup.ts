@@ -1,7 +1,8 @@
 import "./popup.css";
 
 import { providerDefinition } from "../shared/providers";
-import { loadLastOperation } from "../shared/storage";
+import { formatShortcut } from "../shared/shortcut";
+import { loadLastOperation, loadSettings } from "../shared/storage";
 import type { LastOperation, OperationStatus } from "../shared/types";
 
 const app = document.querySelector<HTMLElement>("#app");
@@ -25,7 +26,7 @@ app.innerHTML = `
       <button id="copy-prompt" class="secondary-button" type="button" disabled>复制完整提问</button>
       <button id="open-settings-main" class="primary-button" type="button">配置站点</button>
     </div>
-    <footer><kbd>Ctrl</kbd><span>+</span><kbd>Shift</kbd><span>+</span><kbd>Y</kbd><b>仅响应一次按键</b></footer>
+    <footer><kbd id="shortcut-label">&#96; / ·</kbd><b>扇贝页面快捷键 · 仅响应一次按键</b></footer>
   </div>
   <div id="toast" class="toast" role="status"></div>
 `;
@@ -41,7 +42,9 @@ void initialize();
 async function initialize(): Promise<void> {
   if (typeof chrome === "undefined" || !chrome.runtime?.id) return;
   try {
-    lastOperation = await loadLastOperation();
+    const [operation, settings] = await Promise.all([loadLastOperation(), loadSettings()]);
+    lastOperation = operation;
+    requiredElement<HTMLElement>("#shortcut-label").textContent = formatShortcut(settings.shortcut);
     if (lastOperation) render(lastOperation);
   } catch {
     showToast("无法读取最近状态", true);

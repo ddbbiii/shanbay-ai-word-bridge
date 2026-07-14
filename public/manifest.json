@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Shanbay AI Word Bridge",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Capture the current Shanbay word and send a structured prompt to your preferred AI web app.",
   "permissions": [
     "scripting",
@@ -40,13 +40,5 @@
       "32": "icons/icon-32.png"
     }
   },
-  "options_page": "options.html",
-  "commands": {
-    "capture-word": {
-      "suggested_key": {
-        "default": "Ctrl+Shift+Y"
-      },
-      "description": "Capture the current Shanbay word"
-    }
-  }
+  "options_page": "options.html"
 }

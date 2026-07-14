@@ -30,10 +30,6 @@ chrome.runtime.onStartup.addListener(() => { void initialize(false); });
 chrome.permissions.onAdded.addListener(() => { void syncProviderScripts(); });
 chrome.permissions.onRemoved.addListener(() => { void syncProviderScripts(); });
 
-chrome.commands.onCommand.addListener((command) => {
-  if (command === "capture-word") void captureFromActiveTab();
-});
-
 chrome.runtime.onMessage.addListener((message: unknown, sender, sendResponse) => {
   if (!isRecord(message) || typeof message.type !== "string") return false;
   void handleMessage(message, sender)
@@ -77,20 +73,6 @@ async function handleMessage(message: Record<string, unknown>, sender: chrome.ru
     default:
       return null;
   }
-}
-
-async function captureFromActiveTab(): Promise<void> {
-  const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-  if (typeof tab?.id !== "number" || !tab.url?.startsWith("https://web.shanbay.com/")) return;
-  let response: { word?: string } | undefined;
-  try {
-    response = await chrome.tabs.sendMessage(tab.id, { type: "BRIDGE_CAPTURE_WORD" });
-  } catch {
-    await chrome.scripting.executeScript({ target: { tabId: tab.id }, files: ["shanbay.js"] });
-    response = await chrome.tabs.sendMessage(tab.id, { type: "BRIDGE_CAPTURE_WORD" });
-  }
-  if (response?.word) await processWord(response.word, tab.id);
-  else await showToast(tab.id, "没有识别到当前单词，可先选中后重试", "warning");
 }
 
 async function processWord(rawWord: string, shanbayTabId: number): Promise<{ status: string }> {

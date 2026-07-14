@@ -2,6 +2,7 @@ import "./options.css";
 
 import { providerDefinition } from "../shared/providers";
 import { DEFAULT_PROMPT_TEMPLATE, normalizeSettings, validatePreferredUrl } from "../shared/settings";
+import { DEFAULT_SHORTCUT, formatShortcut, shortcutFromKeyboardEvent, shortcutLabels } from "../shared/shortcut";
 import type { AppSettings, ProviderId, ProviderRuntimeState, ProviderSettings } from "../shared/types";
 
 interface SettingsResponse {
@@ -17,6 +18,7 @@ if (!app) throw new Error("设置页挂载点不存在。");
 let settings = normalizeSettings(null);
 let states: ProviderRuntimeState[] = [];
 let draggedId: ProviderId | null = null;
+let recordingShortcut = false;
 
 app.innerHTML = `
   <div class="page-shell">
@@ -48,8 +50,27 @@ app.innerHTML = `
       <p id="template-hint" class="field-hint">模板必须保留 <code>{word}</code> 占位符。</p>
     </section>
 
+    <section class="panel shortcut-panel" aria-labelledby="shortcut-title">
+      <div class="section-heading">
+        <div><p class="section-index">03</p><h2 id="shortcut-title">扇贝页面快捷键</h2></div>
+        <p>点击录入后直接按下目标按键或组合键。快捷键只在扇贝页面生效，不会注册成系统全局热键。</p>
+      </div>
+      <div class="shortcut-config">
+        <div class="shortcut-current">
+          <span>当前快捷键</span>
+          <div id="shortcut-display" class="shortcut-display" aria-live="polite"></div>
+          <small>默认使用键盘左上角的反引号键，中文输入环境可能显示为“·”。</small>
+        </div>
+        <div class="shortcut-actions">
+          <button id="record-shortcut" class="record-button" type="button">录入新快捷键</button>
+          <button id="reset-shortcut" class="text-button" type="button">恢复 &#96; / ·</button>
+        </div>
+      </div>
+      <p id="shortcut-hint" class="field-hint">支持字母、数字、F1–F12、数字键盘和常用标点；录入时按 Esc 取消。</p>
+    </section>
+
     <footer class="save-bar">
-      <div><strong>快捷键</strong><span>扇贝页面按 <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>Y</kbd>，也可选中文本后触发。</span></div>
+      <div><strong>快捷键</strong><span id="shortcut-summary"></span></div>
       <button id="save-settings" class="primary-button" type="button">保存全部设置</button>
     </footer>
   </div>
@@ -60,6 +81,10 @@ const providerList = requiredElement<HTMLElement>("#provider-list");
 const templateInput = requiredElement<HTMLTextAreaElement>("#prompt-template");
 const templateHint = requiredElement<HTMLElement>("#template-hint");
 const saveButton = requiredElement<HTMLButtonElement>("#save-settings");
+const shortcutDisplay = requiredElement<HTMLElement>("#shortcut-display");
+const shortcutHint = requiredElement<HTMLElement>("#shortcut-hint");
+const shortcutSummary = requiredElement<HTMLElement>("#shortcut-summary");
+const recordShortcutButton = requiredElement<HTMLButtonElement>("#record-shortcut");
 
 requiredElement<HTMLButtonElement>("#reset-template").addEventListener("click", () => {
   templateInput.value = DEFAULT_PROMPT_TEMPLATE;
@@ -68,7 +93,16 @@ requiredElement<HTMLButtonElement>("#reset-template").addEventListener("click", 
 });
 templateInput.addEventListener("input", validateTemplate);
 saveButton.addEventListener("click", () => { void saveAll(); });
+recordShortcutButton.addEventListener("click", beginShortcutRecording);
+requiredElement<HTMLButtonElement>("#reset-shortcut").addEventListener("click", () => {
+  settings.shortcut = { ...DEFAULT_SHORTCUT };
+  recordingShortcut = false;
+  renderShortcut();
+  showToast("已恢复默认快捷键，保存后生效");
+});
+window.addEventListener("keydown", handleShortcutRecording, true);
 
+renderShortcut();
 void initialize();
 
 async function initialize(): Promise<void> {
@@ -77,6 +111,7 @@ async function initialize(): Promise<void> {
     states = settings.providers.map((item) => ({ id: item.id, permissionGranted: false, open: false }));
     templateInput.value = settings.promptTemplate;
     renderProviders();
+    renderShortcut();
     validateTemplate();
     return;
   }
@@ -87,6 +122,7 @@ async function initialize(): Promise<void> {
     states = stateResponse.states ?? [];
     templateInput.value = settings.promptTemplate;
     renderProviders();
+    renderShortcut();
     validateTemplate();
   } catch (error) {
     showToast(errorMessage(error, "读取设置失败"), true);
@@ -237,6 +273,7 @@ async function saveAll(): Promise<void> {
     settings = normalizeSettings(response.settings);
     states = response.states ?? states;
     renderProviders();
+    renderShortcut();
     showToast("设置已保存");
   } catch (error) {
     showToast(errorMessage(error, "保存失败"), true);
@@ -244,6 +281,55 @@ async function saveAll(): Promise<void> {
     saveButton.disabled = false;
     saveButton.textContent = "保存全部设置";
   }
+}
+
+function beginShortcutRecording(): void {
+  recordingShortcut = true;
+  recordShortcutButton.classList.add("is-recording");
+  recordShortcutButton.textContent = "请按下新快捷键…";
+  shortcutHint.textContent = "正在录入：按下一个按键或组合键，按 Esc 取消。";
+  recordShortcutButton.focus();
+}
+
+function handleShortcutRecording(event: KeyboardEvent): void {
+  if (!recordingShortcut) return;
+  event.preventDefault();
+  event.stopImmediatePropagation();
+  if (event.key === "Escape") {
+    recordingShortcut = false;
+    renderShortcut();
+    showToast("已取消快捷键录入");
+    return;
+  }
+  const shortcut = shortcutFromKeyboardEvent(event);
+  if (!shortcut) {
+    shortcutHint.textContent = "这个按键不适合作为页面快捷键，请改用字母、数字、F1–F12、数字键盘或常用标点。";
+    return;
+  }
+  settings.shortcut = shortcut;
+  recordingShortcut = false;
+  renderShortcut();
+  showToast(`已录入 ${formatShortcut(shortcut)}，保存后生效`);
+}
+
+function renderShortcut(): void {
+  shortcutDisplay.replaceChildren();
+  shortcutLabels(settings.shortcut).forEach((label, index) => {
+    if (index > 0) {
+      const separator = document.createElement("span");
+      separator.textContent = "+";
+      shortcutDisplay.appendChild(separator);
+    }
+    const key = document.createElement("kbd");
+    key.textContent = label;
+    shortcutDisplay.appendChild(key);
+  });
+  recordShortcutButton.classList.toggle("is-recording", recordingShortcut);
+  recordShortcutButton.textContent = recordingShortcut ? "请按下新快捷键…" : "录入新快捷键";
+  if (!recordingShortcut) {
+    shortcutHint.textContent = "支持字母、数字、F1–F12、数字键盘和常用标点；录入时按 Esc 取消。";
+  }
+  shortcutSummary.textContent = `扇贝页面按 ${formatShortcut(settings.shortcut)} 触发，也可先选中文本。`;
 }
 
 function validateTemplate(): boolean {

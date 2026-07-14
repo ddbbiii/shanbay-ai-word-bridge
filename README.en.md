@@ -8,6 +8,7 @@ Capture the current word or selected text on Shanbay and deliver a structured Ch
 
 - Enable, authorize, and prioritize providers independently.
 - Choose verified auto-send or fill-only mode per provider.
+- Record a custom Shanbay-page shortcut in settings; the default is the <kbd>` / ·</kbd> key.
 - Optionally prefer one conversation URL, then fall back to the most recently used tab for that provider.
 - Never opens AI sites automatically and never treats a synthetic Enter event as proof of success.
 - Reroutes only after a confirmed non-submission. An uncertain result is copied instead to prevent duplicate messages.
@@ -32,8 +33,7 @@ Load the generated `dist` directory.
 
 ## Use
 
-- Press the backquote key <kbd>`</kbd> on Shanbay for the original quick workflow.
-- Or use <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>Y</kbd>, configurable from the browser's extension shortcut page.
+- Press the default <kbd>` / ·</kbd> key on Shanbay, or record any supported key or key combination on the settings page.
 - Selected text wins over page detection.
 - If no authorized provider tab is open, the complete prompt is copied for use in Codex or any other AI.
 

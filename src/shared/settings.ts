@@ -1,4 +1,5 @@
 import { PROVIDERS, providerDefinition } from "./providers";
+import { DEFAULT_SHORTCUT, normalizeShortcut } from "./shortcut";
 import { PROVIDER_IDS, type AppSettings, type ProviderId, type ProviderSettings } from "./types";
 
 export const DEFAULT_PROMPT_TEMPLATE = `请解释英文单词或短语：{word}
@@ -15,8 +16,9 @@ export const DEFAULT_PROMPT_TEMPLATE = `请解释英文单词或短语：{word}
 不要为了方便记忆而捏造词根；如果词源不确定，请明确说明。`;
 
 export const DEFAULT_SETTINGS: AppSettings = {
-  schemaVersion: 1,
+  schemaVersion: 2,
   promptTemplate: DEFAULT_PROMPT_TEMPLATE,
+  shortcut: { ...DEFAULT_SHORTCUT },
   providers: PROVIDERS.map((item, priority) => ({
     id: item.id,
     enabled: true,
@@ -46,7 +48,7 @@ export function normalizeSettings(raw: unknown): AppSettings {
 
   providers.sort((left, right) => left.priority - right.priority);
   providers.forEach((item, priority) => { item.priority = priority; });
-  return { schemaVersion: 1, promptTemplate: template, providers };
+  return { schemaVersion: 2, promptTemplate: template, providers, shortcut: normalizeShortcut(candidate.shortcut) };
 }
 
 function normalizeProvider(raw: unknown, id: ProviderId, defaultPriority: number): ProviderSettings {
