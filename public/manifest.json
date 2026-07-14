@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Shanbay AI Word Bridge",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Capture the current Shanbay word and send a structured prompt to your preferred AI web app.",
   "permissions": [
     "scripting",
@@ -27,7 +27,7 @@
     {
       "matches": ["https://web.shanbay.com/*"],
       "js": ["shanbay.js"],
-      "run_at": "document_idle"
+      "run_at": "document_start"
     }
   ],
   "action": {

@@ -102,6 +102,7 @@ export function isSupportedShortcutCode(code: string): boolean {
 }
 
 function resolveEventCode(event: ShortcutEventLike): string {
+  if (["`", "·"].includes(event.key)) return "Backquote";
   if (event.code === "Backquote") return "Backquote";
   if ((!event.code || event.code === "Unidentified") && ["`", "·", "Process"].includes(event.key)) {
     return "Backquote";

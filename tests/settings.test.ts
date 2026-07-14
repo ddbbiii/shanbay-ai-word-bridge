@@ -42,6 +42,17 @@ describe("settings", () => {
     }, DEFAULT_SHORTCUT)).toBe(true);
   });
 
+  it("matches a literal middle dot even when an IME reports a different physical code", () => {
+    expect(matchesShortcut({
+      code: "Digit2",
+      key: "·",
+      ctrlKey: false,
+      altKey: false,
+      shiftKey: false,
+      metaKey: false
+    }, DEFAULT_SHORTCUT)).toBe(true);
+  });
+
   it("captures and formats a custom key combination", () => {
     const shortcut = shortcutFromKeyboardEvent({
       code: "KeyK",

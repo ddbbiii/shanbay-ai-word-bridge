@@ -16,7 +16,7 @@ let configuredShortcut: ShortcutSettings = { ...DEFAULT_SHORTCUT };
 if (!bridgeWindow.__shanbayAiWordBridgeLoaded) {
   bridgeWindow.__shanbayAiWordBridgeLoaded = true;
   void refreshShortcut();
-  document.addEventListener("keydown", handleShortcut, true);
+  window.addEventListener("keydown", handleShortcut, true);
   chrome.storage.onChanged.addListener((changes, areaName) => {
     if (areaName === "local" && changes.settings) {
       configuredShortcut = normalizeSettings(changes.settings.newValue).shortcut;
