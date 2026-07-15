@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="480" viewBox="0 0 1200 480" role="img" aria-labelledby="title desc">
+  <title id="title">Shanbay AI Word Bridge 使用流程</title>
+  <desc id="desc">在扇贝按快捷键，把当前单词发送到已打开的 AI 网页并验证结果。</desc>
+  <defs><linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#f8fbf7"/><stop offset="1" stop-color="#e4f5ef"/></linearGradient><linearGradient id="core"><stop stop-color="#0c7669"/><stop offset="1" stop-color="#19a98e"/></linearGradient><filter id="s"><feDropShadow dy="10" stdDeviation="14" flood-color="#174d43" flood-opacity=".12"/></filter></defs>
+  <rect width="1200" height="480" rx="28" fill="url(#bg)"/>
+  <text x="60" y="72" font-family="Segoe UI, Microsoft YaHei, sans-serif" font-size="34" font-weight="700" fill="#15322d">一个快捷键，把当前单词交给你常用的 AI</text>
+  <text x="60" y="108" font-family="Segoe UI, Microsoft YaHei, sans-serif" font-size="17" fill="#657873">只使用已经打开的网页；发送结果无法确认时，不会冒险重复投递。</text>
+  <g filter="url(#s)"><rect x="60" y="160" width="250" height="230" rx="24" fill="#fff"/><rect x="466" y="142" width="268" height="266" rx="28" fill="url(#core)"/><rect x="890" y="160" width="250" height="230" rx="24" fill="#fff"/></g>
+  <g font-family="Segoe UI, Microsoft YaHei, sans-serif">
+    <rect x="90" y="190" width="86" height="34" rx="17" fill="#e3f5ef"/><text x="133" y="213" text-anchor="middle" font-size="15" font-weight="700" fill="#0c7669">扇贝网页</text>
+    <text x="90" y="267" font-size="26" font-weight="700" fill="#17322c">motivate</text><text x="90" y="305" font-size="16" fill="#62756f">当前词或选中文本</text><rect x="90" y="330" width="156" height="38" rx="9" fill="#f1f5f3" stroke="#d8e3df"/><text x="168" y="355" text-anchor="middle" font-size="15" fill="#415a54">按 ` / · 或自定义键</text>
+    <circle cx="600" cy="204" r="34" fill="#ffffff22"/><path d="M584 204h32m-9-10 10 10-10 10" fill="none" stroke="white" stroke-width="4" stroke-linecap="round"/><text x="600" y="267" text-anchor="middle" font-size="24" font-weight="700" fill="white">安全调度器</text><text x="600" y="303" text-anchor="middle" font-size="16" fill="#dff7f2">站点优先级 · 自动发送 / 仅填入</text><text x="600" y="333" text-anchor="middle" font-size="16" fill="#dff7f2">确认发送 · 防重复 · 失败回退</text><rect x="532" y="354" width="136" height="30" rx="15" fill="#ffffff1f"/><text x="600" y="375" text-anchor="middle" font-size="14" fill="white">设置只存浏览器本机</text>
+    <text x="920" y="205" font-size="20" font-weight="700" fill="#17322c">已打开的 AI 网页</text><text x="920" y="254" font-size="17" fill="#4f6660">Gemini · ChatGPT</text><text x="920" y="288" font-size="17" fill="#4f6660">豆包 · Kimi</text><line x1="920" y1="313" x2="1110" y2="313" stroke="#e0e8e5"/><text x="920" y="344" font-size="15" fill="#c66a00">无可用站点 → 复制完整提问</text><text x="920" y="371" font-size="15" fill="#667a74">不自动打开新网页</text>
+  </g>
+  <path d="M328 273h105m-15-12 15 12-15 12M752 273h105m-15-12 15 12-15 12" fill="none" stroke="#6ead9f" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
